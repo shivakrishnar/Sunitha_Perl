@@ -1,0 +1,120 @@
+Sunitha - Questions to Ask Before Starting Assigned Tickets
+
+Overall readiness assessment
+Not yet fully ready to work independently on assigned tickets. She should first gather the repository, environment, workflow, database, testing, review, and production-support details below. This is an onboarding checkpoint, not a reason to delay all ticket work.
+
+Questions for the team and team lead
+
+1. Organization and architecture
+   - Can someone walk through the end-to-end flow of a communication or document, from ingestion through processing, XML generation, validation, delivery, and downstream consumption?
+   - What are the major repositories, modules, services, scheduled jobs, and databases in the production environment?
+   - Where are existing runbooks, design documents, SQL scripts, XSD schemas, and sample test data stored?
+   - Who owns each system or module, and who is the escalation contact for architecture and legacy-code questions?
+   - What are the top three to five recurring production problems and their known causes or workarounds?
+
+2. Source control and release workflow
+   - Are we using Git or TFS, and what is the exact repository location for this team?
+   - What are the main or release branches, branch-naming rules, commit-message requirements, and required pull request or shelveset format?
+   - How many approvals or reviews are required before code can be merged?
+   - What automated checks run before merging?
+   - What are the steps for promoting changes through DEV, QA/UAT, and production?
+   - Is deployment automated or manual, and who can approve and perform a production release?
+   - Are there deployment freezes, change-management tickets, or maintenance windows?
+
+3. Environments and access
+   - What environments are available: local/VDI, DEV, QA/SIT, UAT, and production?
+   - Which hosts, application paths, database servers, database names, and log directories should she use?
+   - How does she obtain SSH, SFTP, database, repository, ticketing, and on-call access?
+   - What is read-only versus read-write access in each environment?
+   - How is test data provided or refreshed, and are masked or synthetic datasets available?
+   - Which environment variables, configuration files, credentials sources, or secrets mechanisms are required to run a job locally?
+
+4. Testing and quality expectations
+   - Which unit-test framework and test commands are used, such as prove -lv t/?
+   - Which existing test suites must pass before committing or opening a pull request?
+   - How are Perl, XML, SQL, integration, regression, system, and UAT testing performed?
+   - How are test failures reported and assigned?
+   - Is there a required code coverage level or pre-commit validation?
+   - Who creates test data and expected XML for system and UAT testing?
+   - What validation is required before changes are considered ready for QA/UAT?
+
+5. Production support
+   - Where do alerts arrive, and what is the on-call rotation schedule?
+   - Where are application, batch, database, and infrastructure logs located?
+   - What are the first checks when a batch fails or communications stop being delivered?
+   - What is the incident and escalation process?
+   - When is a senior engineer or DBA required to take over?
+   - What actions are prohibited or require approval in production?
+
+Questions for the teammate assigning or reviewing a ticket
+
+1. Ticket scope
+   - What is the business requirement and the expected behavior for this ticket?
+   - What are the acceptance criteria, including exact XML, SQL, status, and downstream effects?
+   - Are there known edge cases, backward-compatibility requirements, or existing related tickets?
+   - Is this change limited to one repository, or does it span several repositories or services?
+   - What is the target environment and desired delivery date?
+   - Which existing implementation or module is the closest working example?
+
+2. Repository and code location
+   - Which exact repository contains the code for this ticket?
+   - Which branch should be used as the base?
+   - Which entry-point .pl script or .pm module starts or implements this workflow?
+   - Which supporting modules, configuration files, XML schemas, XSLT files, SQL scripts, templates, and test files must also be changed?
+   - Are there local examples or a known implementation pattern for this change?
+   - Which files should remain unchanged to avoid unintended scope?
+
+3. Data and dependencies
+   - Which database, schema, tables, views, and stored procedures are involved?
+   - Is there a safe sample payload or database row that represents normal and error conditions?
+   - Which values are mandatory, optional, nullable, encoded, or truncated?
+   - Which external systems or file locations will receive or provide data?
+   - Are there upstream or downstream dependencies that could affect testing or deployment?
+   - Are there locking, transaction, retry, duplicate-processing, or idempotency requirements?
+
+4. Local execution
+   - What exact command runs this script or batch in DEV or locally?
+   - Which Perl version, environment variables, include paths, configuration files, and command-line options are required?
+   - Which Perl modules must match production, and where is the dependency list or module manifest maintained?
+   - How can she safely run only the affected record or a small test batch?
+   - Are mock services, test adapters, or local substitutes available?
+   - What logs and status fields confirm that the test ran successfully?
+
+5. Testing and verification
+   - Is there an existing unit or integration test for this behavior?
+   - What exact test cases cover the normal, missing, malformed, duplicate, and failure scenarios?
+   - How should XML be validated against the XSD?
+   - What SQL checks verify that the expected row, status, and data changes occurred?
+   - How should large XML files or performance-sensitive changes be tested safely?
+   - What evidence and test results should be attached to the ticket or pull request?
+   - Which environment and QA or UAT owner should perform final validation?
+
+6. Review and completion
+   - Who is the required code reviewer or approver?
+   - What commit or merge conventions should be followed?
+   - Can she pair or review the first change with a senior developer before committing?
+   - How will the change be deployed and monitored after release?
+   - What rollback steps or feature controls are available if it fails?
+   - When is the ticket considered complete, and what status or documentation update is required?
+
+Suggested VDI and local-development setup
+
+Before first independent coding:
+   - Confirm the production Perl version and use a matching installation or environment manager.
+   - Install a project-supported version of Perl and package manager, such as cpanm or the organization's approved package process.
+   - Install required modules from the project's existing dependency file or a confirmed production module list.
+   - Install VS Code and the approved Perl, XML, DB, and Git extensions.
+   - Configure Git or Team Explorer/TFS according to the team's source-control system.
+   - Install the database client approved for the organization and configure read-only DEV access.
+   - Install XML validation tools such as xmllint or an approved XML editor.
+   - Install SSH/SFTP tools and access to the required hosts.
+   - Install diff tools for XML and text files.
+   - Confirm Test::More, prove, and the team's test command work locally.
+   - Confirm .gitignore or similar rules are in place so secrets, credentials, test output, and local logs are not committed.
+
+Recommended local Copilot setup
+   - Create .github/copilot-instructions.md only after confirming the repository permits committed instructions.
+   - If it cannot be committed, keep equivalent local rules in VS Code instructions or the approved local settings location.
+   - Record the exact Perl coding, logging, SQL, XML, testing, and error-handling conventions used by the repository.
+   - Do not ask Copilot to infer hidden database credentials or production behavior. Provide only approved schemas, sample data, and repository context.
+   - Require Copilot output to preserve existing interfaces and legacy conventions and to include a focused regression test.

@@ -1,0 +1,438 @@
+MY Prompt to google gemini:
+
+Sunitha's New Orgonization
+
+below is her JD
+
+Role Overview
+
+We are seeking a Perl Developer with 3–5 years of experience in backend development, specializing in Perl, XML, and SQL. The role involves developing, maintaining, testing, and supporting business-critical communication systems using existing and emerging technical frameworks.
+
+Key Responsibilities
+
+- Develop, maintain, and enhance software applications and databases using Perl, XML, and SQL.
+- Work with custom-built frameworks to support document processing and communication systems.
+- Perform unit testing and assist with system testing and User Acceptance Testing (UAT).
+- Investigate, troubleshoot, and resolve technical issues with support from senior engineers.
+- Maintain technical documentation for application changes, operational procedures, and support processes.
+- Track assigned development tasks, update work items, and provide regular status reports.
+- Collaborate with cross-functional teams to deliver reliable software solutions.
+- Participate in rotating on-call support for production issues outside regular working hours.
+
+Required Qualifications
+
+- 3–5 years of professional software development experience.
+- Strong proficiency in Perl (approximately 80% of development work).
+- Experience working with XML and SQL.
+- Knowledge of software development, debugging, and troubleshooting.
+- Ability to work under pressure and meet tight deadlines.
+- Strong problem-solving, teamwork, and communication skills.
+- Ability to learn unfamiliar systems and adapt to changing requirements.
+- Flexibility to support business-critical systems when required.
+
+Preferred Qualifications
+
+- Experience with version control systems such as Git or Team Foundation Server (TFS).
+- Familiarity with legacy applications and custom-built frameworks.
+- Experience maintaining and enhancing existing enterprise software.
+- Understanding of unit testing, system testing, UAT, and production support.
+
+
+Gemini answer:
+
+Here is a breakdown of the role, key focus areas, and preparation pointers for Sunitha’s new Perl Developer position:
+
+1. Core Technical Breakdown
+Perl (~80% of the workload): Heavy focus on backend scripting, text/data manipulation, regular expressions, file handling, and working with custom or legacy Perl modules/frameworks.
+
+XML: Parsing, generating, validating (XSD/DTD), and transforming (XSLT) structured documents—commonly used in enterprise communication and document-processing pipelines (e.g., XML::LibXML, XML::Twig, XML::Simple).
+
+SQL: Querying, optimizing, and maintaining relational databases (joins, stored procedures, indexing, and database integration via Perl DBI / DBD).
+
+Version Control & Tooling: Git or Team Foundation Server (TFS) for branching, merging, and tracking changes alongside work-item management.
+
+2. Day-to-Day Operational Expectations
+Document & Communication Pipelines: Maintaining and enhancing custom-built frameworks that generate, transform, or route business-critical communications (such as statements, notices, or transactional documents).
+
+End-to-End Testing: Writing unit tests (e.g., using Perl’s Test::More), supporting system integration testing, and assisting business stakeholders during UAT.
+
+Production Support & On-Call: Participating in an out-of-hours on-call rotation to triage, debug, and resolve high-priority production incidents under tight deadlines.
+
+Documentation & Reporting: Keeping runbooks, operational procedures, and change logs up to date, while providing regular status updates on assigned tickets.
+
+3. Quick Ramp-Up & Interview/Onboarding Focus Areas
+Perl Essentials: Brush up on references, complex data structures (hashes of arrays/hashes), object-oriented Perl (Moose/Moo or blessed references), error handling (eval, Try::Tiny), and DBI prepared statements.
+
+XML Processing in Perl: Review DOM vs. SAX/streaming parsers (especially XML::LibXML and XML::Twig for handling large XML payloads efficiently without high memory overhead).
+
+Legacy Code Navigation: Practice tracing unfamiliar codebases, reading logs to isolate failures quickly, and writing safe regression tests before modifying legacy modules.
+
+TFS / Git Workflows: Ensure familiarity with TFS shelvesets/changesets (if the organization uses legacy Microsoft tooling alongside Perl) as well as standard Git workflows.
+
+Would you like to tailor a 30-60-90 day onboarding plan, generate interview/technical prep questions, or build a quick-reference cheat sheet for Perl, XML, and SQL based on this JD?
+
+My Prompt:
+
+quick-reference cheat sheet
+
+Gemini answer:
+
+Here is a Perl, XML & SQL Quick-Reference Cheat Sheet tailored for backend document-processing and production-support workflows:
+
+1. Perl Core Essentials (80% of Workload)
+Strictness & Boilerplate
+Perl
+use strict;
+use warnings;
+use feature 'say';
+use Try::Tiny;
+
+Variables & Complex Data StructuresTypeSigilExampleDereferencingScalar$my $str = "doc_123";$$scalar_refArray@my @ids = (1, 2, 3);@$array_ref / $array_ref->[0]Hash%my %cfg = (env => 'prod');%$hash_ref / $hash_ref->{env}Check reference type: ref($var) eq 'HASH' (or 'ARRAY', 'SCALAR').Safe nested check: if (exists $data->{user} && defined $data->{user}{id}) { ... }Regular Expressions (Text & Log Parsing)Match: $line =~ /ERROR:\s+(\d+)\s+-\s+(.*)/ (captures in $1, $2)Substitute: $text =~ s/^\s+|\s+$//g; (trim leading/trailing whitespace)Flags: i (case-insensitive), g (global), m (multiline ^/$), s (. matches newline), x (allow comments/whitespace).Non-greedy: .*? instead of .* when extracting tags or delimited values.File I/O & Error HandlingPerlopen(my $fh, '<:encoding(UTF-8)', $file) or die "Cannot open $file: $!";
+while (my $line = <$fh>) {
+    chomp $line;
+    # process line
+}
+close($fh);
+
+try {
+    risky_operation();
+} catch {
+    warn "Caught error: $_"; # $_ holds the exception message
+};
+Unit Testing (Test::More)Perluse Test::More tests => 3;
+is($got, $expected, 'Exact string/number match');
+like($output, qr/SUCCESS/, 'Regex match on output');
+is_deeply(\%got_hash, \%expected_hash, 'Nested structure comparison');
+2. XML Processing in PerlXML::LibXML (DOM & XPath — Standard for Medium/Complex Payloads)Perluse XML::LibXML;
+
+my $dom = XML::LibXML->load_xml(location => 'input.xml'); # or string => $xml_str
+
+# XPath queries
+my ($cust_id) = $dom->findnodes('/Order/Customer/@id');
+say $cust_id->nodeValue;
+
+foreach my $item ($dom->findnodes('//Item[Price > 100]')) {
+    my $sku = $item->findvalue('./SKU');
+    say "High-value SKU: $sku";
+}
+
+# Modify & serialize
+$item->setAttribute('status', 'processed');
+my $updated_xml = $dom->toString(1); # 1 = pretty print
+XML::Twig (Streaming — Best for Huge XML Files to Avoid Memory Spikes)Perluse XML::Twig;
+
+my $twig = XML::Twig->new(
+    twig_handlers => {
+        'Record' => sub {
+            my ($t, $record) = @_;
+            say $record->first_child_text('AccountID');
+            $t->purge; # Frees memory after each <Record> is processed
+        }
+    }
+);
+$twig->parsefile('large_batch.xml');
+XSD ValidationPerlmy $schema = XML::LibXML::Schema->new(location => 'schema.xsd');
+eval { $schema->validate($dom) };
+die "Schema validation failed: $@" if $@;
+3. SQL & Perl DBI PatternsConnecting & Parameterized Queries (Prevents SQL Injection)Perluse DBI;
+
+my $dbh = DBI->connect(
+    "DBI:Pg:dbname=comm_db;host=db-prod", # Use DBI:ODBC, DBI:Oracle, or DBI:mysql as needed
+    $user, $pass,
+    { RaiseError => 1, AutoCommit => 0, PrintError => 0 }
+);
+
+# SELECT with placeholders
+my $sth = $dbh->prepare("SELECT doc_id, status FROM documents WHERE batch_id = ? AND status = ?");
+$sth->execute($batch_id, 'PENDING');
+
+while (my $row = $sth->fetchrow_hashref) {
+    say "$row->{doc_id}: $row->{status}";
+}
+Transactions (Batch Updates)Perleval {
+    my $upd = $dbh->prepare("UPDATE documents SET status = ? WHERE doc_id = ?");
+    $upd->execute('SENT', $doc_id);
+    $dbh->commit;
+};
+if ($@) {
+    warn "Transaction failed, rolling back: $@";
+    $dbh->rollback;
+}
+High-Frequency SQL Queries for Support & TroubleshootingFind stuck/failed records:SQLSELECT status, COUNT(*) 
+FROM document_queue 
+WHERE created_at >= CURRENT_DATE 
+GROUP BY status;
+Identify duplicate records:SQLSELECT external_ref_id, COUNT(*) 
+FROM communications 
+GROUP BY external_ref_id 
+HAVING COUNT(*) > 1;
+Check slow queries / execution plan: Prefix query with EXPLAIN ANALYZE (PostgreSQL/MySQL) or SET SHOWPLAN_ALL ON (SQL Server).4. Production Support & Debugging One-LinersSyntax check without executing: perl -c script.plRun with Perl debugger: perl -d script.pl (n = next, s = step in, p $var = print, c = continue, q = quit)Dump nested variables cleanly:Perluse Data::Dumper;
+$Data::Dumper::Sortkeys = 1;
+warn Dumper(\%complex_hash);
+Quick search across legacy codebase: grep -rn "sub process_document" /path/to/repoInline search & replace in logs/configs: perl -ne 'print if /ERROR|FATAL/' app.logWould you like to save this cheat sheet as a downloadable PDF or Markdown file, or dive deeper into TFS/Git workflows or a 30-60-90 day onboarding plan?
+
+
+My Prompt:
+
+She is new to this orgonization
+What all the quesion she needs to rise to know the workflows in team meeting? what other question she needs to discuss with team member to work on an assined ticket? like in which repo she need to work on for the perticular ticket. in the orgonization dont have wiki or conflunce pages. what all the tools she need to install in her VDI for writing code and testing perpose before committing the code?
+
+Gemini answer:
+
+Here is a practical checklist of questions Sunitha should ask in team meetings and with her teammates—especially since the organization lacks a Wiki or Confluence—along with the essential tools she needs on her VDI.
+
+1. Questions for the Team Meeting (High-Level Workflows & Architecture)
+Since there is no centralized documentation (Wiki/Confluence), she should focus on capturing the "tribal knowledge" around how systems fit together and how work moves to production:
+
+System & Architecture Overview:
+
+"Can someone walk through the end-to-end flow of a communication/document—from incoming request/DB entry to XML generation and final delivery?"
+
+"Where are existing runbooks, design notes, or legacy SOPs stored if not in a Wiki (e.g., shared drives, READMEs inside repos, or old ticket comments)?"
+
+Source Control & Deployment Process:
+
+"Are we using Git or TFS, and what is our branching strategy (e.g., feature branches off develop or main, PR/code review rules)?"
+
+"How are changes promoted from Dev → QA/UAT → Production? Is there an automated CI/CD pipeline, or are deployments manual?"
+
+Testing & Environments:
+
+"Which non-prod environments do we have (Dev, SIT, UAT), and how is test data refreshed or masked?"
+
+"Do we have automated unit/regression test suites (Test::More / .t files) that must pass before merging?"
+
+On-Call & Production Support:
+
+"When I join the on-call rotation, what are the top 3–5 recurring production issues, where do alerts come from, and where are the production logs located?"
+
+2. Questions to Ask a Teammate When Assigned a Specific Ticket
+Before writing code for an assigned ticket, she should pair up with a senior developer for 15–20 minutes and ask:
+
+Repository & Codebase Location:
+
+"Which exact repository (or multiple repos) holds the code for this module?"
+
+"What is the entry-point script or main Perl module (.pl / .pm) triggered for this workflow?"
+
+"Are there related configuration files, XML schemas (.xsd), XSLT stylesheets, or SQL scripts in a separate repo?"
+
+Database & Data Dependencies:
+
+"Which database, schema, and specific tables are involved in this ticket, and how do I get read/write access to Dev/QA DBs?"
+
+"Can you share a sample input XML payload and expected output for this flow?"
+
+Local Execution & Testing:
+
+"How do I run this specific script or batch job locally on my VDI (e.g., required environment variables, command-line arguments, or mock upstream services)?"
+
+"Are there existing unit tests for this module, or how should I validate my changes before handing the ticket over to QA/UAT?"
+
+Ticket & Review Conventions:
+
+"Should my branch name or commit messages include the ticket ID, and who should I tag as a reviewer?"
+
+3. Essential Tools to Install on Her VDI
+Depending on whether her VDI runs Windows or Linux, she should request/install the following stack for coding, XML validation, DB querying, and local testing:
+
+Core Runtime & Package Management
+Perl Runtime: Strawberry Perl (if on Windows) or system Perl / perlbrew + cpanm (if on Linux) matching the exact Perl version used in Production.
+
+Project Perl Modules: XML::LibXML, XML::Twig, DBI, DBD (for the org's DB—e.g., DBD::Pg, DBD::ODBC, DBD::Oracle), Try::Tiny, Test::More, and Data::Dumper.
+
+Code Editor / IDE
+VS Code (with extensions: Perl / Perl Navigator for syntax/linting, XML by Red Hat for XSD validation & formatting, and GitLens) or Notepad++ (with XML Tools plugin) for quick log/XML inspection on Windows.
+
+Version Control & Diff Tools
+Git (Git for Windows / Git Bash) and/or Visual Studio / Team Explorer (if the team uses TFS).
+
+WinMerge or Beyond Compare (invaluable for comparing large generated XML files before and after a code change).
+
+Database & XML Utilities
+Database Client: DBeaver (universal), SQL Server Management Studio (SSMS), Oracle SQL Developer, or pgAdmin—depending on the backend DB.
+
+XML Validation / XPath Tool: xmllint (part of libxml2 utilities) or Notepad++ XML Tools plugin to quickly test XPath expressions and validate XML against .xsd schemas.
+
+Server Access & Log Debugging (If backend runs on Linux/Unix)
+SSH & File Transfer Client: PuTTY or MobaXterm (for SSH + SFTP log browsing) or Windows Terminal with OpenSSH.
+
+WinSCP: For transferring sample XML payloads or logs between Linux Dev/QA servers and the Windows VDI.
+
+Would you like a personal note-taking template she can use to document the architecture and repo mappings for herself as she learns them from her teammates?
+
+
+my Prompt
+personal note-taking template
+
+Here is a structured Personal Engineering Notebook Template (in Markdown) that Sunitha can keep locally on her VDI (in Notepad++, VS Code, or Obsidian) to capture tribal knowledge and build her own reference guide from day one:
+
+Markdown
+# Personal Engineering & System Reference Guide
+**Role:** Perl Backend Developer | **Start Date:** YYYY-MM-DD
+
+---
+
+## 1. Key Contacts & Go-To People
+| Name | Role / Area of Expertise | Best Way to Reach |
+| :--- | :--- | :--- |
+| | Team Lead / Manager | |
+| | Senior Perl Dev (Architecture / Legacy Framework) | |
+| | DBA / SQL Contact | |
+| | QA / UAT Lead | |
+| | DevOps / Release / On-Call Lead | |
+
+---
+
+## 2. Repository & Codebase Map
+*Since there is no central Wiki, log every repo and what it controls here.*
+
+| Repo Name | VCS (Git/TFS) | Purpose / Module | Key Entry-Point Scripts (`.pl` / `.pm`) | Config / XSD / SQL Locations |
+| :--- | :--- | :--- | :--- | :--- |
+| `e.g., comm-engine` | Git | Core XML document builder | `bin/process_batch.pl` | `/config/prod.ini`, `/schemas/` |
+| | | | | |
+| | | | | |
+
+---
+
+## 3. End-to-End System Flow
+*Document how data enters, transforms, and exits the system.*
+
+1. **Trigger / Ingestion:** *(e.g., Cron job / batch scheduler / DB polling table `incoming_requests`)*
+2. **Processing Layer:** *(e.g., Perl script reads DB rows -> maps fields -> generates XML via `XML::LibXML`)*
+3. **Validation:** *(e.g., Validated against `schema_v2.xsd`)*
+4. **Output / Delivery:** *(e.g., Drops XML to SFTP / calls downstream API / updates status in DB)*
+5. **Downstream Consumers:** *(Who receives the generated documents?)*
+
+---
+
+## 4. Environments & Database Connections
+| Environment | App Server Host / Path | DB Server & Database Name | Log Directory Path | Notes / Access Rules |
+| :--- | :--- | :--- | :--- | :--- |
+| **Local / VDI** | `C:\Projects\...` | Local / Dev DB | `./logs/` | |
+| **DEV** | | | | |
+| **QA / UAT** | | | | |
+| **PROD** | *(Read-only / On-call)* | *(Read-only)* | | *Never run unapproved scripts* |
+
+---
+
+## 5. Git / TFS & Deployment Workflow
+* **Main / Release Branch:** `_______________________`
+* **Branch Naming Rule:** *(e.g., `feature/TICKET-123-short-desc`)*
+* **Commit Message Format:** *(e.g., `[TICKET-123] Fix XML encoding for special chars`)*
+* **Code Review / PR Rules:** *(Who approves? Any required checks?)*
+* **Deployment Steps:**
+  * **To DEV:** 
+  * **To QA/UAT:** 
+  * **To PROD:** 
+
+---
+
+## 6. Local Testing & Debugging Commands
+*Save exact commands that work on the VDI so you never have to figure them out twice.*
+
+* **Run syntax check:**
+  ```bash
+  perl -Ilib -c bin/script_name.pl
+Run unit tests:
+
+Bash
+prove -lv t/
+Run sample batch locally:
+
+Bash
+# Paste exact command + environment variables + sample XML input path here
+Validate XML against XSD:
+
+Bash
+xmllint --noout --schema path/to/schema.xsd path/to/output.xml
+7. Ticket & Troubleshooting Log
+Keep a running log of every ticket worked on and every production issue seen.
+
+[TICKET-XXX] - Short Description (Date: YYYY-MM-DD)
+Repo & Files Modified:
+
+Root Cause / Requirement:
+
+DB Tables / Queries Used:
+
+How It Was Tested:
+
+Gotchas / Lessons Learned:
+
+8. On-Call & Production Support Playbook
+Alert Channels: (Email / Teams / Slack / PagerDuty)
+
+Common Error #1:
+
+Symptom / Log Message:
+
+SQL Query to Check Status:
+
+Resolution / Escalation Contact:
+
+
+---
+
+Would you like this exported as a **downloadable `.md` or `.docx` file**, or would you like to add a **30-60-90 day onboarding checklist** to go with it?
+
+My promt 
+
+She is planning to work on VisualCode using Copilot, what exactly she need to give the prompt to copilot?
+
+Gemini answer:
+
+Since Sunitha is joining a codebase without a Wiki or Confluence, GitHub Copilot in VS Code is actually her biggest advantage—she can use it both to reverse-engineer the legacy codebase and to write safe Perl, XML, and SQL changes.
+Here is the exact setup and copy-paste prompts she should use in VS Code:
+1. One-Time Setup: Give Copilot Persistent Rules (.github/copilot-instructions.md)Instead of repeating her tech stack in every prompt, she can create a .github/copilot-instructions.md file inside her local repo folder (if she shouldn't commit it, she can add it to .git/info/exclude so it stays purely local on her VDI). Copilot automatically reads this file on every prompt:
+Markdown
+# Project & Coding Standards
+- Primary stack: Perl (backend), XML (XML::LibXML / XML::Twig), and SQL (DBI with parameterized placeholders).
+- Always enforce `use strict;` and `use warnings;` in Perl code.
+- Never use regex to parse or modify XML—use `XML::LibXML` or `XML::Twig`.
+- Always use parameterized SQL queries (`?` placeholders) via `DBI`—never interpolate variables directly into SQL strings.
+- Preserve existing legacy subroutine signatures and logging conventions unless explicitly asked to refactor.
+- When suggesting fixes, also provide a `Test::More` unit test case.
+
+2. Prompts for Understanding an Undocumented Codebase (Ask Mode)
+In VS Code Copilot Chat (Ctrl+Alt+I or Cmd+Alt+I), she should use #codebase so Copilot searches across all files in her open repository.
+
+To map out a new repo on Day 1:
+
+#codebase Explain the overall architecture of this repository. Identify the main entry-point scripts (.pl), core library modules (.pm), XML schema/template files, and database connection handlers.
+
+To trace a ticket's flow end-to-end:
+
+#codebase Trace how [Feature/Process Name or XML Tag, e.g., <InvoiceHeader>] is processed from start to finish. List every Perl subroutine, SQL table, and config file touched along the way.
+
+To decode a confusing legacy Perl subroutine:(Highlight the subroutine in the editor first, then type:)
+
+#selection Explain what this Perl subroutine does step-by-step, what input data structures it expects, what it returns, and any side effects (DB updates, file writes, or global variables).
+
+3. Prompts for Working on an Assigned Ticket (Edit / Agent Mode)
+In VS Code Copilot Chat, switch the mode dropdown at the bottom of the chat box to Edit or Agent and reference specific files using #filename:
+
+For modifying XML mapping/generation logic:
+
+Using #process_doc.pl and #schema.xsd, update the XML generation logic to add a new optional <DeliveryMode> element under <Recipient>. Populate it from the delivery_mode column fetched in the SQL query. Ensure the output validates against #schema.xsd and handles NULL values safely without warnings.
+
+For writing or fixing a SQL query in Perl DBI:
+
+In #db_handler.pm, update the fetch_pending_records subroutine to filter out records where status = 'CANCELLED' and retry_count >= 3. Use DBI placeholders, preserve existing error handling, and explain if any index considerations apply.
+
+For debugging a production error log:
+
+I got this error when running the batch job: "[paste exact Perl/SQL/XML error line]". Search #codebase to find where this error originates, explain the root cause, and propose a minimal, safe fix.
+
+4. Prompts for Writing Unit Tests Before Committing
+Before pushing code to Git or TFS, she can generate regression tests to prove she didn't break legacy behavior:
+
+Generate Test::More tests:
+
+Write a unit test file using Test::More for the changes we just made in #Mapper.pm. Cover: (1) normal valid input, (2) missing/undef optional XML fields, and (3) malformed input error handling.
+
+Pre-commit self-review:
+
+Review my uncommitted git diff for Perl strict/warnings compliance, uninitialized value risks, SQL injection vulnerabilities, memory leaks on large XML files, and missing edge cases.
+
+Quick VS Code Cheat-Keys for Copilot#codebase — Searches the whole repo when she doesn't know which file has the logic.#file (e.g., #OrderParser.pm) — Pins specific Perl, XML, or SQL files into the prompt.Ctrl + I (Cmd + I on Mac) — Opens inline chat right on top of a line of code for quick edits without switching to the sidebar.   Start a "New Chat" (+ icon) for every new ticket so old ticket context doesn't confuse Copilot.
